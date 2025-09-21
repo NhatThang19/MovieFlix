@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/admin/layout/admin-layout}"
+      th:with="activeMenuItem='Country'">
+
+<head>
+    <title th:text="${title}"></title>
+</head>
+
+<body>
+<th:block th:fragment="directorListBody">
+    <tr th:each="country : ${countryPage.content}">
+        <td class="text-center" th:text="${country.id}"></td>
+        <td class="text-center" th:text="${country.name}"></td>
+        <td class="d-flex justify-content-center gap-2">
+            <a th:href="@{'/admin/country/' + ${country.id}}" class="btn btn-warning btn-sm text-white">Sửa <i
+                    class="fas fa-edit ms-2"></i></a>
+            <form th:action="@{'/admin/country/delete/' + ${country.id}}" method="post">
+                <button type="submit" th:onclick="return confirm('Bạn có chắc chắn muốn xóa?');"
+                        class="btn btn-danger btn-sm">Xóa <i class="fas fa-trash-alt ms-2"></i></button>
+            </form>
+        </td>
+    </tr>
+    <tr th:if="${countryPage.empty}">
+        <td th:attr="colspan=${#lists.size(columns) + 1}" class="text-center">Không tìm thấy kết quả nào</td>
+    </tr>
+</th:block>
+
+<div layout:fragment="content">
+    <div th:replace="~{/admin/fragment/component/page_header :: page-header-with-button(
+            title=${title},
+            url=@{/admin/country/create},
+         )}">
+    </div>
+
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check"></i>
+        [[${successMessage}]]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        [[${errorMessage}]]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="mt-5" th:replace="~{/admin/fragment/component/data_table :: data-table(
+            page=${countryPage},
+            sort=${sort},
+            keyword=${keyword},
+            listUrl='/admin/country',
+            baseUrl='/admin/country',
+            searchPlaceholder='Tìm kiếm quốc gia...',
+            columns=${columns},
+            bodyFragment=~{::directorListBody}
+        )}">
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<th th:fragment="sortable-header(listUrl, sort, keyword, field, label)" scope="col" class="text-center">
+    <th:block th:with="reverseSortDir=${sort.contains(field + ',asc') ? 'desc' : 'asc'}">
+        <a th:href="@{${listUrl}(sort=${field} + ',' + ${reverseSortDir}, keyword=${keyword})}">
+            [[${label}]]
+            <i class="fas"
+               th:classappend="${sort.contains(field + ',asc') ? 'fa-sort-up' : (sort.contains(field + ',desc') ? 'fa-sort-down' : 'fa-sort')}"></i>
+        </a>
+    </th:block>
+</th>
+
+<div th:fragment="data-table(page, sort, keyword, listUrl, baseUrl, searchPlaceholder, columns, bodyFragment)"
+     class="page-inner mt--5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mx-auto mt-5">
+                <div class="card-header">
+                    <form th:action="@{${listUrl}}" method="get" class="d-flex">
+                        <div class="input-group w-25 ms-auto">
+                            <input autocomplete="off" type="text" name="keyword" class="form-control"
+                                   th:placeholder="${searchPlaceholder}"
+                                   th:value="${keyword}">
+                            <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th:block th:each="column : ${columns}">
+                                    <th th:if="${column.sortable}"
+                                        th:replace="~{:: sortable-header(
+                                            listUrl=${listUrl},
+                                            sort=${sort},
+                                            keyword=${keyword},
+                                            field=${column.field},
+                                            label=${column.label}
+                                        )}">
+                                    </th>
+                                    <th th:unless="${column.sortable}" class="text-center"
+                                        th:text="${column.label}"></th>
+                                </th:block>
+
+                                <th class="text-center">Hành động</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <th:block th:replace="${bodyFragment}">
+                            </th:block>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div th:if="${page.totalPages > 0}" class="d-flex justify-content-between align-items-center mt-3">
+
+                        <div>
+                            <p class="text-muted">
+                                Hiển thị
+                                <span class="fw-bold" th:text="${(page.size * page.number) + 1}">1</span>
+                                đến
+                                <span class="fw-bold"
+                                      th:text="${(page.size * page.number) + page.numberOfElements}">10</span>
+                                của
+                                <span class="fw-bold" th:text="${page.totalElements}">57</span>
+                                entries
+                            </p>
+                        </div>
+
+                        <nav th:if="${page.totalPages > 1}">
+                            <ul class="pagination justify-content-center mb-0">
+                                <li class="page-item" th:classappend="${page.first} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{${listUrl}(page=1, sort=${sort}, keyword=${keyword})}">Đầu</a>
+                                </li>
+                                <li class="page-item" th:classappend="${page.first} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{${listUrl}(page=${page.number}, sort=${sort}, keyword=${keyword})}">Trước</a>
+                                </li>
+
+                                <li class="page-item"
+                                    th:each="pageNumber : ${#numbers.sequence(T(java.lang.Math).max(1, page.number), T(java.lang.Math).min(page.number + 4, page.totalPages))}"
+                                    th:classappend="${pageNumber == page.number + 1} ? 'active'">
+                                    <a class="page-link"
+                                       th:href="@{${listUrl}(page=${pageNumber}, sort=${sort}, keyword=${keyword})}"
+                                       th:text="${pageNumber}"></a>
+                                </li>
+
+                                <li class="page-item" th:classappend="${page.last} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{${listUrl}(page=${page.number + 2}, sort=${sort}, keyword=${keyword})}">Sau</a>
+                                </li>
+                                <li class="page-item" th:classappend="${page.last} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{${listUrl}(page=${page.totalPages}, sort=${sort}, keyword=${keyword})}">Cuối</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

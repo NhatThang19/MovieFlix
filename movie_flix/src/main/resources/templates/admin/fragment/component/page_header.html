@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="page-header-with-button(title, url)"
+     class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+    <div>
+        <h3 class="fw-bold mb-3" th:text="${title}">Page Title Placeholder</h3>
+    </div>
+
+    <div class="ms-md-auto py-2 py-md-0" th:if="${!#strings.isEmpty(url)}">
+        <a th:href="${url != null ? url : '#'}"
+           class="btn btn-primary btn-round">
+            Tạo Mới <i class="ms-2 fas fa-plus"></i>
+            <i class="gg-add ms-1"></i>
+        </a>
+    </div>
+</div>
+
+</body>
+</html>

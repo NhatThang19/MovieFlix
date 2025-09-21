@@ -1,0 +1,47 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
+    <div class="container-fluid">
+        <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
+            <li class="nav-item topbar-user dropdown hidden-caret">
+                <a class="dropdown-toggle profile-pic"
+                   data-bs-toggle="dropdown"
+                   href="#"
+                   aria-expanded="false"
+                >
+                    <div class="avatar-sm">
+                        <img th:src="@{/admin/img/profile.jpg}"
+                             alt="..."
+                             class="avatar-img rounded-circle"/>
+                    </div>
+                    <span class="profile-username">
+                        <span class="op-7">Hi,</span>
+                        <span class="fw-bold" th:text="${#authentication.name}">Hizrian</span>
+                    </span>
+                </a>
+                <ul class="dropdown-menu dropdown-user animated fadeIn">
+                    <div class="dropdown-user-scroll scrollbar-outer">
+                        <li>
+                            <div class="user-box justify-content-center">
+                                <div class="u-text">
+                                    <h4 class="text-center" th:text="${#authentication.name}">
+                                        hello@example.com</h4>
+                                    <h4 class="text-center" th:text="${#authentication.authorities}">
+                                        hello@example.com</h4>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" th:href="@{/}">Trang chủ</a>
+                            <form th:action="@{/logout}" method="post" id="logoutForm">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                <button type="submit" class="dropdown-item">Logout</button>
+                            </form>
+
+                        </li>
+                    </div>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>

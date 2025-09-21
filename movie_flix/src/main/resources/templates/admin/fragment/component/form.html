@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="form-input(name, label, type, required, placeholder)" class="form-group">
+    <label th:for="${name}" th:text="${label}">Label</label>
+    <span th:if="${required}" class="text-danger">*</span>
+    <input th:type="${type}"
+           class="form-control"
+           autocomplete="off"
+           th:field="*{__${name}__}"
+           th:placeholder="${placeholder}"
+           th:classappend="${#fields.hasErrors(name)} ? 'is-invalid' : ''">
+    <div class="invalid-feedback"
+         th:if="${#fields.hasErrors(name)}"
+         th:errors="*{__${name}__}">
+    </div>
+</div>
+
+<div th:fragment="form-textarea(name, label, rows, required, placeholder)" class="form-group">
+    <label th:for="${name}" th:text="${label}">Label</label>
+    <span th:if="${required}" class="text-danger">*</span>
+    <textarea class="form-control"
+              th:rows="${rows}"
+              th:field="*{__${name}__}"
+              th:placeholder="${placeholder}"
+              th:classappend="${#fields.hasErrors(name)} ? 'is-invalid' : ''">
+    </textarea>
+    <div class="invalid-feedback"
+         th:if="${#fields.hasErrors(name)}"
+         th:errors="*{__${name}__}">
+    </div>
+</div>
+
+<div th:fragment="form-select(name, label, options, required)" class="form-group">
+    <label th:for="${name}" th:text="${label}">Label</label>
+    <span th:if="${required}" class="text-danger">*</span>
+    <select class="form-select"
+            th:field="*{__${name}__}"
+            th:classappend="${#fields.hasErrors(name)} ? 'is-invalid' : ''">
+        <option value="">-- Vui lòng chọn --</option>
+        <option th:each="option : ${options}"
+                th:value="${option.key}"
+                th:text="${option.value}">
+        </option>
+    </select>
+    <div class="invalid-feedback"
+         th:if="${#fields.hasErrors(name)}"
+         th:errors="*{__${name}__}">
+    </div>
+</div>
+
+<div th:fragment="form-multi-select(name, label, options, required)" class="form-group">
+    <label th:for="${name}" th:text="${label}">Label</label>
+    <span th:if="${required}" class="text-danger">*</span>
+    <select class="form-select" multiple="multiple"
+            th:field="*{__${name}__}"
+            th:classappend="${#fields.hasErrors(name)} ? 'is-invalid' : ''">
+        <option th:each="option : ${options}"
+                th:value="${option.key}"
+                th:text="${option.value}">
+        </option>
+    </select>
+    <div class="invalid-feedback"
+         th:if="${#fields.hasErrors(name)}"
+         th:errors="*{__${name}__}">
+    </div>
+</div>
+
+<div th:fragment="form-multi-checkbox-pills(name, label, options, required)" class="form-group">
+    <label class="form-label d-flex">
+        [[${label}]]
+        <span class="text-danger">*</span>
+    </label>
+    <div class="selectgroup selectgroup-pills">
+        <label class="selectgroup-item" th:each="option : ${options}" th:with="optionValue=${option.key ?: option}, optionLabel=${option.value ?: option}">
+            <input type="checkbox"
+                   th:name="${name}"
+                   th:value="${optionValue}"
+                   class="selectgroup-input"
+                   th:checked="${selectedValues != null and #lists.contains(selectedValues, optionValue)}">
+            <span class="selectgroup-button" th:text="${optionLabel}"></span>
+        </label>
+    </div>
+    <div th:if="${#fields.hasErrors(name)}" class="invalid-feedback d-block">
+        <span th:errors="*{name}"></span>
+    </div>
+</div>
+
+</body>
+</html>

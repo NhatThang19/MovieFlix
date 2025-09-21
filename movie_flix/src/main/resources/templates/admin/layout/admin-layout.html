@@ -1,0 +1,99 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title layout:title-pattern="$CONTENT_TITLE | MovieFlix">Default Title</title>
+
+    <!-- Fonts and icons -->
+    <script th:src="@{/admin/js/plugin/webfont/webfont.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/admin/css/fonts.min.css}"/>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" th:href="@{/admin/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/admin/css/plugins.min.css}"/>
+    <link rel="stylesheet" th:href="@{/admin/css/kaiadmin.min.css}"/>
+</head>
+<body>
+<div class="wrapper">
+    <!-- Sidebar -->
+    <div th:replace="~{/admin/fragment/sidebar :: div}"></div>
+    <!-- End Sidebar -->
+
+    <div class="main-panel">
+        <div class="main-header">
+            <div class="main-header-logo">
+                <!-- Logo Header -->
+                <div class="logo-header" data-background-color="dark">
+                    <a th:href="@{/admin}" class="logo">
+                        <img th:src="@{/admin/img/kaiadmin/logo_light.svg}"
+                             alt="navbar brand"
+                             class="navbar-brand"
+                             height="20"
+                        />
+                    </a>
+                    <div class="nav-toggle">
+                        <button class="btn btn-toggle toggle-sidebar">
+                            <i class="gg-menu-right"></i>
+                        </button>
+                        <button class="btn btn-toggle sidenav-toggler">
+                            <i class="gg-menu-left"></i>
+                        </button>
+                    </div>
+                    <button class="topbar-toggler more">
+                        <i class="gg-more-vertical-alt"></i>
+                    </button>
+                </div>
+                <!-- End Logo Header -->
+            </div>
+            <!-- Navbar Header -->
+            <div th:replace="~{/admin/fragment/header :: nav}"></div>
+            <!-- End Navbar -->
+        </div>
+
+        <!-- Main Content -->
+        <div class="container">
+            <div layout:fragment="content" class="page-inner"></div>
+        </div>
+        <!-- End Main Content -->
+
+        <!-- Footer -->
+        <div th:replace="~{/admin/fragment/footer :: footer}"></div>
+        <!-- End Footer -->
+    </div>
+</div>
+<!--   Core JS Files   -->
+<script th:src="@{/admin/js/core/jquery-3.7.1.min.js}"></script>
+<script th:src="@{/admin/js/core/popper.min.js}"></script>
+<script th:src="@{/admin/js/core/bootstrap.min.js}"></script>
+
+<!-- jQuery Scrollbar -->
+<script th:src="@{/admin/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js}"></script>
+
+<!-- Chart JS -->
+<script th:src="@{/admin/js/plugin/chart.js/chart.min.js}"></script>
+
+<!-- jQuery Sparkline -->
+<script th:src="@{/admin/js/plugin/jquery.sparkline/jquery.sparkline.min.js}"></script>
+
+<!-- Chart Circle -->
+<script th:src="@{/admin/js/plugin/chart-circle/circles.min.js}"></script>
+
+<!-- Datatables -->
+<script th:src="@{/admin/js/plugin/datatables/datatables.min.js}"></script>
+
+<!-- Bootstrap Notify -->
+<script th:src="@{/admin/js/plugin/bootstrap-notify/bootstrap-notify.min.js}"></script>
+
+<!-- jQuery Vector Maps -->
+<script th:src="@{/admin/js/plugin/jsvectormap/jsvectormap.min.js}"></script>
+<script th:src="@{/admin/js/plugin/jsvectormap/world.js}"></script>
+
+<!-- Sweet Alert -->
+<script th:src="@{/admin/js/plugin/sweetalert/sweetalert.min.js}"></script>
+
+<!-- Kaiadmin JS -->
+<script th:src="@{/admin/js/kaiadmin.min.js}"></script>
+
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{client/layout/layout}">
+
+<head>
+    <title th:text="${movie.title}">Xem Phim</title>
+    <th:block layout:fragment="custom-css">
+        <!-- Video.js CSS -->
+        <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet">
+        <!-- Alpine.js -->
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    </th:block>
+</head>
+
+<body>
+<th:block layout:fragment="content">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/}"><i class="fas fa-home me-1"></i>Trang Chủ</a></li>
+            <li class="breadcrumb-item active" th:text="${movie.title}" aria-current="page"></li>
+        </ol>
+    </nav>
+
+    <!-- Player Section -->
+    <div class="row">
+        <div class="col-12">
+            <h2 class="section-title" th:text="'Đang Xem: ' + ${movie.title}">Đang Xem: Phim</h2>
+            <div class="video-container mb-4">
+                <video id="my-video" class="video-js vjs-default-skin w-100" controls preload="auto"
+                       data-setup="{}">
+                    <source th:src="${movie.filmUrl}" type="application/x-mpegURL">
+                    <p class="vjs-no-js">
+                        Để xem video này, vui lòng bật JavaScript và cân nhắc việc nâng cấp trình duyệt web của bạn
+                        <a href="https://videojs.com/html5-video-support/" target="_blank">hỗ trợ video HTML5</a>.
+                    </p>
+                </video>
+            </div>
+        </div>
+    </div>
+
+    <!-- Movie Info -->
+    <div class="row mb-5">
+        <div class="col-lg-4 mb-4 mb-lg-0">
+            <div class="poster-center">
+                <img th:src="${movie.posterUrl}" th:alt="${movie.title}" class="img-fluid"
+                     onerror="this.onerror=null;this.src='https://placehold.co/400x600/222/FFF?text=Image+Not+Found';">
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="movie-info">
+                <h1 class="movie-title" th:text="${movie.title}">Tiêu đề phim</h1>
+
+                <div class="mb-4">
+                    <span class="badge-custom" th:if="${movie.releaseYear}">
+                            <i class="fas fa-calendar me-1"></i> <span th:text="${movie.releaseYear}">2023</span>
+                        </span>
+                    <span class="badge-custom" th:if="${movie.duration}">
+                            <i class="fas fa-clock me-1"></i> <span th:text="${movie.duration} + ' Phút'">120 phút</span>
+                        </span>
+                    <span class="badge-custom" th:if="${movie.country}">
+                            <i class="fas fa-flag me-1"></i> <span th:text="${movie.country.name}">Mỹ</span>
+                        </span>
+                </div>
+
+                <div class="mb-4" th:if="${not #lists.isEmpty(movie.genres)}">
+                    <h4 class="mb-3"><i class="fas fa-tags me-2 text-primary"></i>Thể Loại</h4>
+                    <div>
+                        <th:block th:each="genre : ${movie.genres}">
+                            <span class="badge-custom" th:text="${genre.name}">Thể loại</span>
+                        </th:block>
+                    </div>
+                </div>
+
+                <div class="country mb-4" th:if="${movie.country.name}">
+                    <h4 class="mb-3"><i class="fas fa-globe me-2 text-primary"></i>Quốc Gia</h4>
+                    <p class="fs-5" th:text="${movie.country.name}">Quốc gia</p>
+                </div>
+
+                <div class="director mb-4" th:if="${movie.director.name}">
+                    <h4 class="mb-3"><i class="fas fa-video me-2 text-primary"></i>Đạo Diễn</h4>
+                    <p class="fs-5" th:text="${movie.director.name}">Đạo diễn</p>
+                </div>
+
+                <div class="actors mb-4" th:if="${movie.actors}">
+                    <h4 class="mb-3"><i class="fas fa-user me-2 text-primary"></i>Diễn Viên</h4>
+                    <th:block th:each="actor : ${movie.actors}">
+                        <p class="fs-5" th:text="${actor.name}">Diễn viên</p>
+                    </th:block>
+                </div>
+
+                <div class="mb-4" th:if="${movie.description}">
+                    <h4 class="mb-3"><i class="fas fa-info-circle me-2 text-primary"></i>Nội Dung</h4>
+                    <p class="fs-5" th:text="${movie.description}">Mô tả phim</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" th:if="${!#lists.isEmpty(relatedMovies)}">
+        <div class="col-12">
+            <h2 class="section-title">Phim Liên Quan</h2>
+        </div>
+
+        <div class="col-md-6 col-lg-3 mb-4" th:each="movie : ${relatedMovies}">
+            <a th:href="@{'/movie/' + ${movie['id']}}" class="text-decoration-none">
+                <div class="movie-card h-100">
+                    <img th:src="${movie['poster_url']}" class="movie-poster w-100" th:alt="${movie['title']}"
+                         onerror="this.onerror=null;this.src='https://placehold.co/400x600/222/FFF?text=Image+Not+Found';">
+
+                    <div class="p-3 d-flex flex-column">
+                        <h5 class="movie-title mb-2" th:text="${movie['title']}">Tên phim</h5>
+                        <p class="movie-year small mb-2" th:text="${movie['release_year']}">Năm phát hành</p>
+                        <div class="mb-3">
+                            <th:block th:each="genre : ${movie['genres']}">
+                                <span class="badge bg-secondary me-1 mb-1"
+                                      th:each="genre : ${#strings.arraySplit(movie['genres'], ',')}"
+                                      th:text="${genre}">
+                              Thể loại
+                        </span>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="custom-js">
+    <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize Video.js player
+            var player = videojs('my-video', {
+                fluid: true,
+                responsive: true,
+                playbackRates: [0.5, 1, 1.5, 2],
+                controls: true,
+                preload: 'auto',
+                controlBar: {
+                    fullscreenToggle: true
+                }
+            });
+
+            // Handle fullscreen events
+            player.on('fullscreenchange', function () {
+                const videoContainer = document.querySelector('.video-js');
+                if (player.isFullscreen()) {
+                    // Hide cursor after 3 seconds of inactivity
+                    let cursorTimeout;
+
+                    const hideCursor = () => {
+                        videoContainer.style.cursor = 'none';
+                    };
+
+                    const showCursor = () => {
+                        videoContainer.style.cursor = 'default';
+                        clearTimeout(cursorTimeout);
+                        cursorTimeout = setTimeout(hideCursor, 3000);
+                    };
+
+                    // Show cursor on mouse move
+                    videoContainer.addEventListener('mousemove', showCursor);
+
+                    // Hide cursor initially after 3 seconds
+                    cursorTimeout = setTimeout(hideCursor, 3000);
+
+                    // Show cursor on play/pause
+                    player.on('play', showCursor);
+                    player.on('pause', showCursor);
+                } else {
+                    // Reset cursor when exiting fullscreen
+                    videoContainer.style.cursor = 'default';
+                }
+            });
+        });
+        /*]]>*/
+    </script>
+</th:block>
+</body>
+
+</html>

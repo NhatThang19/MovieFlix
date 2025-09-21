@@ -1,0 +1,9 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<li th:fragment="nav-item(link, title, menuItem, icon)" class="nav-item"
+    th:classappend="${activeMenuItem == menuItem} ? 'active' : ''">
+    <a th:href="${link}">
+        <i class="fas" th:classappend="${icon}"></i>
+        <p th:text="${title}"></p>
+    </a>
+</li>

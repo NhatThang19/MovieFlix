@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/admin/layout/admin-layout}"
+      th:with="activeMenuItem='Actor'">
+
+<head>
+    <title th:text="${title}"></title>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div class="card w-50 mx-auto mt-5">
+        <div class="card-header">
+            <div class="card-title" th:text="${title}">Tiêu đề</div>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/admin/actor/save}" th:object="${actor}" method="post">
+                <input type="hidden" th:if="${actor.id}" th:field="*{id}"/>
+                <div th:replace="~{/admin/fragment/component/form :: form-input(
+                        name='name',
+                        label='Tên diễn viên',
+                        type='text',
+                        required=true,
+                        placeholder='Nhập tên diễn viên...')}">
+                </div>
+                <div class="card-action text-end">
+                        <button type="submit" class="btn btn-success me-2"
+                            th:text="${editMode?.name() == 'CREATE'} ? 'Thêm mới' : 'Cập nhật'">
+                    </button>
+                    <a th:href="@{/admin/actor}" class="btn btn-danger">Hủy</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>

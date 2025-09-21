@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/admin/layout/admin-layout}"
+      th:with="activeMenuItem='Film'">
+
+<head>
+    <title th:text="${title}"></title>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div class="card mx-auto mt-5">
+        <div class="card-header">
+            <div class="card-title" th:text="${title}">Tiêu đề</div>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/admin/film/save}" th:object="${film}" method="post">
+                <input type="hidden" th:if="${film.id}" th:field="*{id}"/>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div th:replace="~{/admin/fragment/component/form :: form-input(
+                        name='title',
+                        label='Tên phim',
+                        type='text',
+                        required=true,
+                        placeholder='Nhập tên phim...')}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div th:replace="~{/admin/fragment/component/form :: form-input(
+                        name='releaseYear',
+                        label='Năm phát hành',
+                        type='number',
+                        required=true,
+                        placeholder='Nhập năm phát hành...')}">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <div th:replace="~{/admin/fragment/component/form :: form-textarea(
+                        name='description',
+                        label='Mô tả',
+                        type='text',
+                        required=true,
+                        rows=4,
+                        placeholder='Nhập mô tả...')}">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div th:replace="~{/admin/fragment/component/form :: form-input(
+                        name='duration',
+                        label='Thời lượng (phút)',
+                        type='number',
+                        required=true,
+                        placeholder='Nhập tên phim...')}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div th:replace="~{/admin/fragment/component/form :: form-input(
+                        name='posterUrl',
+                        label='URL Poster',
+                        type='text',
+                        required=true,
+                        placeholder='Nhập URL poster...')}">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div th:replace="~{/admin/fragment/component/form :: form-input(
+                        name='filmUrl',
+                        label='URL Phim',
+                        type='text',
+                        required=true,
+                        placeholder='Nhập URl phim...')}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div th:replace="~{/admin/fragment/component/form :: form-multi-select(
+                        name='actors',
+                        label='Diễn viên',
+                        options=${actors},
+                        required=true)}">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div th:replace="~{admin/fragment/component/form :: form-multi-select(
+                            name='genres',
+                            label='Thể loại',
+                            options=${genres},
+                            required=true)}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div th:replace="~{/admin/fragment/component/form :: form-select(
+                        name='country',
+                        label='quốc gia',
+                        options=${countries},
+                        required=true)}">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div th:replace="~{/admin/fragment/component/form :: form-select(
+                        name='director',
+                        label='Đạo diễn',
+                        options=${directors},
+                        required=true)}">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action text-end">
+                    <button type="submit" class="btn btn-success me-2"
+                            th:text="${editMode?.name() == 'CREATE'} ? 'Thêm mới' : 'Cập nhật'">
+                    </button>
+                    <a th:href="@{/admin/film}" class="btn btn-danger">Hủy</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>

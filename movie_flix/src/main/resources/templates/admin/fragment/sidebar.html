@@ -1,0 +1,46 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<div class="sidebar" data-background-color="dark">
+    <div class="sidebar-logo">
+        <!-- Logo Header -->
+        <div class="logo-header" data-background-color="dark">
+            <a th:href="@{/admin}" class="logo">
+                <img th:src="@{/admin/img/kaiadmin/logo_light.svg}"
+                     alt="navbar brand"
+                     class="navbar-brand"
+                     height="20"
+                />
+            </a>
+            <div class="nav-toggle">
+                <button class="btn btn-toggle toggle-sidebar">
+                    <i class="gg-menu-right"></i>
+                </button>
+                <button class="btn btn-toggle sidenav-toggler">
+                    <i class="gg-menu-left"></i>
+                </button>
+            </div>
+            <button class="topbar-toggler more">
+                <i class="gg-more-vertical-alt"></i>
+            </button>
+        </div>
+        <!-- End Logo Header -->
+    </div>
+    <div class="sidebar-wrapper scrollbar scrollbar-inner">
+        <div class="sidebar-content">
+            <ul class="nav nav-secondary">
+                <div th:replace="~{/admin/fragment/component/sidebar_item :: nav-item(link=@{/admin}, title='Dashboard', menuItem='Dashboard', icon='fa-tachometer-alt')}"></div>
+                <div th:replace="~{/admin/fragment/component/sidebar_item :: nav-item(link=@{/admin/user}, title='Người dùng', menuItem='User', icon='fa-user')}"></div>
+                <li class="nav-section">
+                <span class="sidebar-mini-icon">
+                  <i class="fa fa-ellipsis-h"></i>
+                </span>
+                    <h4 class="text-section">Quản lý phim</h4>
+                </li>
+                <div th:replace="~{/admin/fragment/component/sidebar_item :: nav-item(link=@{/admin/director}, title='Đạo diễn', menuItem='Director', icon='fa-user-tie')}"></div>
+                <div th:replace="~{/admin/fragment/component/sidebar_item :: nav-item(link=@{/admin/actor}, title='Diễn viên', menuItem='Actor', icon='fa-users')}"></div>
+                <div th:replace="~{/admin/fragment/component/sidebar_item :: nav-item(link=@{/admin/genre}, title='Thể loại', menuItem='Genre', icon='fa-tags')}"></div>
+                <div th:replace="~{/admin/fragment/component/sidebar_item :: nav-item(link=@{/admin/country}, title='Quốc gia', menuItem='Country', icon='fa-globe-asia')}"></div>
+                <div th:replace="~{/admin/fragment/component/sidebar_item :: nav-item(link=@{/admin/film}, title='Phim', menuItem='Film', icon='fa-film')}"></div>
+            </ul>
+        </div>
+    </div>
+</div>

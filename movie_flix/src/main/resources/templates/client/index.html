@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{client/layout/layout}">
+
+<head>
+    <title>Trang Chủ</title>
+    <th:block layout:fragment="custom-css">
+        <!-- Alpine.js -->
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    </th:block>
+</head>
+
+<body>
+<th:block layout:fragment="content">
+    <div class="row" th:if="${!#lists.isEmpty(personalizedMovies)}">
+        <div class="col-12">
+            <h2 class="section-title">Dành cho bạn</h2>
+        </div>
+
+        <div class="col-md-6 col-lg-3 mb-4" th:each="movie : ${personalizedMovies}">
+            <a th:href="@{'/movie/' + ${movie['id']}}" class="text-decoration-none text-reset">
+                <div class="movie-card h-100">
+                    <img th:src="${movie['poster_url']}" class="movie-poster w-100" th:alt="${movie['title']}"
+                         onerror="this.onerror=null;this.src='https://placehold.co/400x600/222/FFF?text=Image+Not+Found';">
+                    <div class="p-3 d-flex flex-column">
+                        <h5 class="movie-title mb-2" th:text="${movie['title']}">Tên phim</h5>
+                        <p class="movie-year small mb-2" th:text="${movie['release_year']}">Năm phát hành</p>
+
+                        <div class="mb-3">
+                            <span class="badge bg-secondary me-1 mb-1"
+                                  th:each="genre : ${#strings.arraySplit(movie['genres'], ',')}"
+                                  th:text="${genre}">
+                              Thể loại
+                        </span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- All Movies -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h2 class="section-title">Tất Cả Phim</h2>
+        </div>
+
+        <th:block th:each="movie : ${paginatedMovies}">
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="movie-card h-100">
+                    <img th:src="${movie.posterUrl}" th:alt="${movie.title}" class="movie-poster w-100"
+                         onerror="this.onerror=null;this.src='https://placehold.co/400x600/222/FFF?text=Image+Not+Found';">
+                    <a th:href="@{'/movie/' + ${movie.id}}"
+                       class="p-3 d-flex flex-column h-100 text-reset text-decoration-none">
+                        <h5 th:text="${movie.title}" class="movie-title mb-2"></h5>
+                        <p class="movie-year small mb-2" th:text="${movie.releaseYear}"></p>
+                        <div class="mb-3">
+                            <th:block th:each="genre : ${movie.genres}">
+                                <span class="badge bg-secondary me-1 mb-1" th:text="${genre.name}"></span>
+                            </th:block>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </th:block>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container" th:if="${totalPages > 1}">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/ (page=${currentPage - 1})}"
+                       th:if="${currentPage > 1}"
+                       aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                    <span class="page-link" th:if="${currentPage == 1}" aria-hidden="true">&laquo;</span>
+                </li>
+
+                <th:block th:each="page : ${#numbers.sequence(1, totalPages)}">
+                    <li class="page-item" th:classappend="${page == currentPage} ? 'active'">
+                        <a class="page-link" th:href="@{/ (page=${page})}" th:text="${page}"></a>
+                    </li>
+                </th:block>
+
+                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/ (page=${currentPage + 1})}"
+                       th:if="${currentPage < totalPages}"
+                       aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                    <span class="page-link" th:if="${currentPage == totalPages}" aria-hidden="true">&raquo;</span>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</th:block>
+
+</body>
+
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/client/layout/layout}">
+
+<head>
+    <title>Tìm Kiếm Phim</title>
+    <th:block layout:fragment="custom-css">
+        <style>
+            .filter-section {
+                background: rgba(20, 20, 20, 0.8);
+                border-radius: 15px;
+                padding: 25px;
+                margin-bottom: 30px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .filter-section h4 {
+                border-bottom: 2px solid var(--primary); /* Lấy biến từ file css chính */
+                padding-bottom: 10px;
+                margin-bottom: 20px;
+            }
+        </style>
+    </th:block>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/}"><i class="fas fa-home me-1"></i>Trang Chủ</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Tìm Kiếm</li>
+        </ol>
+    </nav>
+
+    <!-- Filter Section -->
+    <form class="filter-section" th:action="@{/search}" method="get">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4><i class="fas fa-filter me-2"></i>Bộ lọc tìm kiếm</h4>
+            <div>
+                <button class="btn btn-danger me-2" type="submit">
+                    <i class="fas fa-search me-1"></i>Áp dụng
+                </button>
+                <a th:href="@{/search}" class="btn btn-outline-secondary">
+                    <i class="fas fa-redo me-1"></i>Đặt lại
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Ô tìm kiếm từ khóa (ẩn đi nhưng vẫn là một phần của form) -->
+            <input type="hidden" name="q" th:value="${searchQuery}">
+
+            <!-- Dropdown Thể loại -->
+            <div class="col-md-3 mb-3">
+                <label for="genreId" class="form-label">Thể loại</label>
+                <select id="genreId" name="genreId" class="form-select">
+                    <option value="">Tất cả thể loại</option>
+                    <option th:each="genre : ${genres}"
+                            th:value="${genre.id}"
+                            th:text="${genre.name}"
+                            th:selected="${genre.id == selectedGenreId}"></option>
+                </select>
+            </div>
+
+            <!-- Các dropdown khác tương tự -->
+            <div class="col-md-3 mb-3">
+                <label for="actorId" class="form-label">Diễn viên</label>
+                <select id="actorId" name="actorId" class="form-select">
+                    <option value="">Tất cả diễn viên</option>
+                    <option th:each="actor : ${actors}"
+                            th:value="${actor.id}"
+                            th:text="${actor.name}"
+                            th:selected="${actor.id == selectedActorId}"></option>
+                </select>
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="directorId" class="form-label">Đạo diễn</label>
+                <select id="directorId" name="directorId" class="form-select">
+                    <option value="">Tất cả đạo diễn</option>
+                    <option th:each="director : ${directors}"
+                            th:value="${director.id}"
+                            th:text="${director.name}"
+                            th:selected="${director.id == selectedDirectorId}"></option>
+                </select>
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="countryId" class="form-label">Quốc gia</label>
+                <select id="countryId" name="countryId" class="form-select">
+                    <option value="">Tất cả quốc gia</option>
+                    <option th:each="country : ${countries}"
+                            th:value="${country.id}"
+                            th:text="${country.name}"
+                            th:selected="${country.id == selectedCountryId}"></option>
+                </select>
+            </div>
+        </div>
+    </form>
+
+    <!-- Search Results Info -->
+    <div class="search-result-info mb-4">
+        <h3 class="mb-0">
+            <i class="fas fa-search me-2"></i>
+            <th:block th:if="${searchQuery != null and !searchQuery.isEmpty()}">
+                Kết quả tìm kiếm cho: <span class="text-danger" th:text="${searchQuery}"></span>
+            </th:block>
+            <th:block th:unless="${searchQuery != null and !searchQuery.isEmpty()}">
+                Tất cả phim
+            </th:block>
+        </h3>
+        <p class="mb-0 mt-2" th:if="${filmPage.totalElements > 0}">
+            Tìm thấy <span th:text="${filmPage.totalElements}"></span> kết quả
+        </p>
+    </div>
+
+    <!-- Movie List -->
+    <div class="row">
+        <div class="col-12" th:if="${filmPage.empty}">
+            <p>Không tìm thấy bộ phim nào phù hợp với tiêu chí của bạn.</p>
+        </div>
+        <div class="col-md-6 col-lg-3 mb-4" th:each="film : ${filmPage.content}">
+            <a th:href="@{'/movie/' + ${film.id}}" class="text-decoration-none text-reset">
+                <div class="movie-card h-100">
+                    <img th:src="${film.posterUrl}" class="movie-poster w-100" th:alt="${film.title}"
+                         onerror="this.onerror=null;this.src='https://placehold.co/400x600/222/FFF?text=Image+Not+Found';">
+                    <div class="p-3 d-flex flex-column">
+                        <h5 class="movie-title mb-2" th:text="${film.title}"></h5>
+                        <p class="movie-year small mb-2" th:text="${film.releaseYear}"></p>
+                        <div class="mb-3">
+                            <span class="badge bg-secondary me-1 mb-1" th:each="genre, iter : ${film.genres}"
+                                  th:if="${iter.index < 3}" th:text="${genre.name}"></span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container" th:if="${filmPage.totalPages > 1}">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <!-- Nút Previous -->
+                <li class="page-item" th:classappend="${filmPage.first} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/search(q=${searchQuery}, genreId=${selectedGenreId}, page=${filmPage.number})}"
+                       aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <!-- Dãy số trang -->
+                <li class="page-item" th:each="pageNumber : ${#numbers.sequence(1, filmPage.totalPages)}"
+                    th:classappend="${pageNumber == filmPage.number + 1} ? 'active'">
+                    <a class="page-link"
+                       th:href="@{/search(q=${searchQuery}, genreId=${selectedGenreId}, page=${pageNumber})}"
+                       th:text="${pageNumber}"></a>
+                </li>
+                <!-- Nút Next -->
+                <li class="page-item" th:classappend="${filmPage.last} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/search(q=${searchQuery}, genreId=${selectedGenreId}, page=${filmPage.number + 2})}"
+                       aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+</body>
+</html>
