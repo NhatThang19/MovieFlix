@@ -140,7 +140,7 @@ Dự án bao gồm 2 thành phần chính hoạt động độc lập nhưng gia
 
     - Cập nhật các thuộc tính `spring.datasource.url`, `spring.datasource.username`, `spring.datasource.password` để kết nối đến database `movie_db`.
 
-    - Đảm bảo thuộc tính `recommendation.api.base-url` trỏ đúng đến Flask API:
+    - Đảm bảo thuộc tính `flask.api.url` trỏ đúng đến Flask API:
 
         ```
         recommendation.api.base-url=http://localhost:5000
