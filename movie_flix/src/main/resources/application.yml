@@ -15,3 +15,7 @@ spring:
     jdbc:
       initialize-schema: always
     timeout: 30m
+
+  flask:
+    api:
+      url: http://localhost:5000

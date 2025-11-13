@@ -1,6 +1,8 @@
 package com.vn.movie_flix.config;
 
+import com.vn.movie_flix.model.User;
 import com.vn.movie_flix.repository.UserRepository;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +17,8 @@ public class UserDetailsCustom implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    @Getter
+    private User user;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -28,4 +32,5 @@ public class UserDetailsCustom implements UserDetailsService {
                     Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().getName())));
         }
     }
+
 }

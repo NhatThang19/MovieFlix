@@ -61,6 +61,11 @@
                         </li>
                     </th:block>
                     <li>
+                        <a class="dropdown-item" th:href="@{/profile}">
+                            <i class="fas fa-user me-2"></i> Hồ sơ của tôi
+                        </a>
+                    </li>
+                    <li>
                         <form th:action="@{/logout}" method="post">
                             <button type="submit" class="dropdown-item">
                                 <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất

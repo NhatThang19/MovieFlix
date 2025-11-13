@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/admin/layout/admin-layout}"
+      th:with="activeMenuItem='User'">
+
+<head>
+    <title th:text="${title}">Chi tiết Người dùng</title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+    <div class="page-header">
+        <h3 class="fw-bold mb-3" th:text="${title}"></h3>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Thông tin cơ bản</div>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>ID:</strong>
+                        <p class="mb-0" th:text="${user.id}"></p>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Email:</strong>
+                        <p class="mb-0" th:text="${user.email}"></p>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Vai trò:</strong>
+                        <p class="mb-0 badge"
+                           th:classappend="${user.role.name == 'admin'} ? 'badge-danger' : 'badge-info'"
+                           th:text="${user.role.name}">
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs nav-line" id="myHistoryTabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="history-tab" data-bs-toggle="tab"
+                               href="#history" role="tab" aria-controls="history" aria-selected="true">
+                                Lịch sử xem phim
+                                <span class="badge badge-count" th:text="${#lists.size(user.history)}"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="comments-tab" data-bs-toggle="tab"
+                               href="#comments" role="tab" aria-controls="comments" aria-selected="false">
+                                Lịch sử bình luận
+                                <span class="badge badge-count" th:text="${#lists.size(comments)}"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="myHistoryTabsContent">
+
+                        <div class="tab-pane fade show active" id="history" role="tabpanel"
+                             aria-labelledby="history-tab">
+                            <div th:if="${#lists.isEmpty(user.history)}" class="text-center">
+                                <p>Người dùng này chưa xem phim nào.</p>
+                            </div>
+                            <div class="table-responsive" th:unless="${#lists.isEmpty(user.history)}">
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>ID Phim</th>
+                                        <th>Poster</th>
+                                        <th>Tên Phim</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="film : ${user.history}">
+                                        <td th:text="${film.id}"></td>
+                                        <td>
+                                            <img th:src="${film.posterUrl}" th:alt="${film.title}"
+                                                 width="50" class="img-thumbnail"
+                                                 onerror="this.src='https://placehold.co/50x75'">
+                                        </td>
+                                        <td th:text="${film.title}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="comments" role="tabpanel" aria-labelledby="comments-tab">
+                            <div th:if="${#lists.isEmpty(comments)}" class="text-center">
+                                <p>Người dùng này chưa có bình luận nào.</p>
+                            </div>
+                            <div class="table-responsive" th:unless="${#lists.isEmpty(comments)}">
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>Nội dung</th>
+                                        <th>Trên phim</th>
+                                        <th>Ngày đăng</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="comment : ${comments}">
+                                        <td th:text="${comment.content}"></td>
+                                        <td>
+                                            <a th:href="@{/movie/{id}(id=${comment.film.id})}"
+                                               target="_blank" th:text="${comment.film.title}"></a>
+                                        </td>
+                                        <td th:text="${#temporals.format(comment.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

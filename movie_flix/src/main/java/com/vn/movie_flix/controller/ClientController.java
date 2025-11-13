@@ -1,8 +1,10 @@
 package com.vn.movie_flix.controller;
 
+import com.vn.movie_flix.model.Comment;
 import com.vn.movie_flix.model.Film;
 import com.vn.movie_flix.model.User;
 import com.vn.movie_flix.service.*;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +31,7 @@ public class ClientController {
     private final DirectorService directorService;
     private final CountryService countryService;
     private final UserService userService;
+    private final CommentService commentService;
 
     @GetMapping("/")
     public String home(
@@ -65,13 +69,14 @@ public class ClientController {
 
     @GetMapping("/movie/{id}")
     public String watchMovie(@PathVariable Long id,
-                             Model model, @AuthenticationPrincipal UserDetails userDetails) {
+                             Model model, @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request) {
 
         Film movie = filmService.findById(id);
         if (movie == null) {
             return "redirect:/";
         }
 
+        boolean isFavorited = false;
         Long userId = null;
 
         if (userDetails != null) {
@@ -80,13 +85,23 @@ public class ClientController {
             Set<Film> userHistory = user.getHistory();
             userHistory.add(movie);
             userService.save(user);
+
+            isFavorited = userService.isFilmInFavorites(user.getId(), id);
         }
+
 
         List<Map<String, Object>> relatedMovies =
                 recommendationService.getContentBasedRecommendations(id);
 
         model.addAttribute("movie", movie);
         model.addAttribute("relatedMovies", relatedMovies);
+
+        List<Comment> comments = commentService.getCommentsByFilmId(id);
+
+        model.addAttribute("comments", comments);
+        model.addAttribute("isFavorited", isFavorited);
+
+        model.addAttribute("currentUri", request.getRequestURI());
 
         return "client/watch";
     }
@@ -108,22 +123,41 @@ public class ClientController {
                 query, genreId, actorId, directorId, countryId, PageRequest.of(page - 1, size)
         );
 
-        // 2. Lấy dữ liệu cho các dropdown bộ lọc
         model.addAttribute("genres", genreService.getAll());
         model.addAttribute("actors", actorService.getAll());
         model.addAttribute("directors", directorService.getAll());
         model.addAttribute("countries", countryService.getAll());
 
-        // 3. Đưa kết quả và các tham số vào model để view có thể sử dụng
         model.addAttribute("filmPage", filmPage);
         model.addAttribute("searchQuery", query);
 
-        // Giữ lại các giá trị đã chọn trong bộ lọc
         model.addAttribute("selectedGenreId", genreId);
         model.addAttribute("selectedActorId", actorId);
         model.addAttribute("selectedDirectorId", directorId);
         model.addAttribute("selectedCountryId", countryId);
 
-        return "client/search"; // Trả về view templates/client/search.html
+        return "client/search";
+    }
+
+    @GetMapping("/profile")
+    public String userProfile(Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        User user = userService.findByEmail(principal.getName());
+
+        Long userId = user.getId();
+
+        user = userService.getUserProfile(userId);
+
+        if (user == null) {
+            return "redirect:/logout";
+        }
+
+        model.addAttribute("user", user);
+        model.addAttribute("title", "Hồ sơ của tôi");
+
+        return "client/profile";
     }
 }
